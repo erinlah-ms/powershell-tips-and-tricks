@@ -79,3 +79,20 @@ if (($args | ? { ($_ -match '^(-h|-\?|--help|/h|/\?)$') }).Count -gt 0) {
 ```
 
 ## Powershell as cmd script
+
+If you start a cmd script with the following three lines, you can write the rest of the script as a powershell script, with most language features intact.
+
+This can be handy for scripts you'd like to be able to put on the search path, as .ps1 scripts are not executable out-of-the-box, but .cmd scripts are.
+
+```batch
+<# ::
+@powershell -noni -nop -ex Bypass -Command "$a=@([Environment]::GetCommandLineArgs() | %% { if ($on) { $_ } else { $on = $_ -eq '###' } }); & (iex ('{' + (Get-Content -Raw '%~f0')+'}')) @a" ### %* & goto :eof
+#>
+param($name)
+echo "Hello, $name!"
+```
+
+Note that you should get full commandlet binding in your script.
+
+For more details, see [./examples/embed.cmd](./examples/embed.cmd)
+
